@@ -25,3 +25,9 @@ python -m pytest -q
 
 The suite includes a full four-batch lifecycle plus adversarial coverage for missing actions, duplicates, forward dependencies, unsafe validator output, incomplete receipts, forged approval, replay, duplicate IDs, and unauthorized cancellation.
 
+## Field rehearsal
+
+The canonical StudioNet contract is `0xF966D2968DAE6d00a8197e70d4e687c486119879`. Live recovery `RB-LIVE-20261004B` was opened from the owner wallet, planned through validator consensus, and read back in `EXECUTING` with four dependency-safe batches: fence, verify, promote, restore.
+
+The deployment, initialization, and intelligent-planning transaction hashes live in [`deployment.json`](deployment.json).
+

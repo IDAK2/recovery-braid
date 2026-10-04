@@ -20,32 +20,14 @@ def studio_calldata(method=None, args=None, kwargs=None):
 
 
 contract_actions.make_calldata_object = studio_calldata
-
-
 ROOT = Path(__file__).parents[1]
 text = (ROOT.parents[3] / "accounts.env").read_text()
 key = re.search(r'^ACCOUNT_7_GENLAYER_PRIVATE_KEY\s*=\s*"?([^"\r\n]+)', text, re.M).group(1).strip()
 client = create_client(chain=studionet, account=create_account(account_private_key=key))
 address = sys.argv[1]
 recovery_id = "RB-LIVE-20261004B"
-args = [
-    recovery_id,
-    "A production read replica emitted inconsistent checksums after a regional network partition.",
-    [
-        "Fence the inconsistent replica from serving traffic",
-        "Verify a healthy replica against the last signed snapshot",
-        "Promote the verified replica to primary",
-        "Restore read traffic through the promoted replica",
-    ],
-    [[0, 1], [1, 2], [2, 3]],
-    [
-        "Never promote a replica before its snapshot checksum is verified",
-        "Never restore read traffic before primary promotion is complete",
-    ],
-    4,
-]
-tx = client.write_contract(address=address, function_name="open_recovery", args=args)
-print("open_recovery_tx=" + str(tx), flush=True)
+tx = client.write_contract(address=address, function_name="weave_plan", args=[recovery_id])
+print("weave_plan_tx=" + str(tx), flush=True)
 receipt = client.wait_for_transaction_receipt(
     transaction_hash=tx,
     wait_until="finalized",
@@ -54,11 +36,8 @@ receipt = client.wait_for_transaction_receipt(
     full_transaction=True,
 )
 leader = (receipt.get("consensus_data", {}).get("leader_receipt") or [{}])[0]
-print(json.dumps({
-    "tx": str(tx),
-    "consensus": receipt.get("result_name"),
-    "execution": leader.get("execution_result"),
-}, default=str), flush=True)
-print(json.dumps({
-    "record": client.read_contract(address=address, function_name="get_recovery", args=[recovery_id]),
-}, default=str), flush=True)
+result = {"tx": str(tx), "consensus": receipt.get("result_name"), "execution": leader.get("execution_result")}
+print(json.dumps(result), flush=True)
+if result["execution"] != "SUCCESS":
+    raise RuntimeError("StudioNet transaction did not execute successfully")
+print(json.dumps(client.read_contract(address=address, function_name="get_recovery", args=[recovery_id]), default=str), flush=True)

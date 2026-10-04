@@ -1,0 +1,33 @@
+{
+  "network": "GenLayer StudioNet",
+  "wallet": "0xc8e8f5B7d61Da6eD160f474592627D65728b516e",
+  "contractAddress": "0xF966D2968DAE6d00a8197e70d4e687c486119879",
+  "sourcePath": "contracts/contract.py",
+  "sourceCommit": "3224f0696ade5c2b0bbd49c53bf71df720304e56",
+  "deployment": {
+    "transaction": "0x7f77ae2928cca18f3e3b9192fbff97f65b6924eef5425a408ce310f9d7410fe7",
+    "consensus": "MAJORITY_AGREE",
+    "execution": "SUCCESS"
+  },
+  "liveEvidence": [
+    {
+      "operation": "open_recovery",
+      "transaction": "0x3084ae21d06b7dffe87c1348d3e9115db9f193a75614449ee7b4eb137a1fe4f0",
+      "consensus": "MAJORITY_AGREE",
+      "execution": "SUCCESS"
+    },
+    {
+      "operation": "weave_plan",
+      "transaction": "0x06567a565253b7935406cf93fe36e621d9fade40cbedbf80ecdd11e14b18eed4",
+      "consensus": "MAJORITY_AGREE",
+      "execution": "SUCCESS",
+      "record": "RB-LIVE-20261004B",
+      "finalState": "EXECUTING",
+      "batches": [[0], [1], [2], [3]]
+    }
+  ],
+  "verification": {
+    "genvmLint": "PASS (3 checks)",
+    "directSuite": "13 scenarios authored across both contracts; local runner blocked before contract load by the installed Python 3.13 stdin decoder incompatibility"
+  }
+}
