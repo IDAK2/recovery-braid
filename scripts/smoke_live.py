@@ -3,8 +3,8 @@ import re
 import sys
 from pathlib import Path
 
-from genlayer import create_account, create_client
-from genlayer.chains import studionet
+from genlayer_py import create_account, create_client
+from genlayer_py.chains import studionet
 
 
 ROOT = Path(__file__).parents[1]
