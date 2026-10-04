@@ -43,5 +43,7 @@ print(json.dumps({
     "tx": str(tx),
     "consensus": receipt.get("result_name"),
     "execution": leader.get("execution_result"),
+}, default=str), flush=True)
+print(json.dumps({
     "record": client.read_contract(address=address, function_name="get_recovery", args=[recovery_id]),
 }, default=str), flush=True)

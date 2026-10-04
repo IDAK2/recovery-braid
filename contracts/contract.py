@@ -52,9 +52,13 @@ class Recovery:
     receipt_urls: str
     receipt_digests: str
 
-class RecoveryBraid(gl.Contract):
+class Contract(gl.Contract):
     recoveries: TreeMap[str, Recovery]
     ids: DynArray[str]
+    count: u256
+
+    def __init__(self):
+        self.count = u256(0)
 
     def _get(self, recovery_id):
         key = ident(recovery_id)
@@ -124,7 +128,7 @@ class RecoveryBraid(gl.Contract):
         key = ident(recovery_id); tasks = [clip(value, 300) for value in actions if len(clip(value, 300)) >= 8]; rules = [clip(value, 260) for value in constraints if len(clip(value, 260)) >= 8]; bound = int(max_batches); deps = clean_dependencies(dependencies, len(tasks))
         if key in self.recoveries or len(clip(incident, 900)) < 20 or len(tasks) < 3 or len(tasks) > 16 or len(set(tasks)) != len(tasks) or len(rules) < 1 or len(rules) > 10 or bound < 2 or bound > len(tasks):
             raise gl.vm.UserError("[EXPECTED] unique incident, actions, constraints, and bounded batches required")
-        self.recoveries[key] = Recovery(gl.message.sender_address, clip(incident, 900), json.dumps(tasks), json.dumps(deps), json.dumps(rules), u256(bound), "OPEN", "[]", u256(0), "[]", "[]"); self.ids.append(key)
+        self.recoveries[key] = Recovery(gl.message.sender_address, clip(incident, 900), json.dumps(tasks), json.dumps(deps), json.dumps(rules), u256(bound), "OPEN", "[]", u256(0), "[]", "[]"); self.ids.append(key); self.count += u256(1)
 
     @gl.public.write
     def weave_plan(self, recovery_id: str) -> None:
@@ -154,5 +158,5 @@ class RecoveryBraid(gl.Contract):
     @gl.public.view
     def get_recoveries_page(self, offset: u256, limit: u256) -> dict:
         start = int(offset); size = min(int(limit), 20)
-        return {"items": [self.get_recovery(self.ids[i]) for i in range(start, min(start + size, len(self.ids)))], "total": len(self.ids)}
+        return {"items": [self.get_recovery(self.ids[i]) for i in range(start, min(start + size, int(self.count)))], "total": int(self.count)}
 
